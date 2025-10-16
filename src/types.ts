@@ -18,8 +18,12 @@ export interface InOutSensor extends BaseSensor {
 }
 
 export interface BatterySensor {
-    capacity: BaseSensor;
+    capacity: BatteryCapacitySensor;
     temperature: BatteryTemperatureSensor;
+}
+
+export interface BatteryCapacitySensor extends BaseSensor {
+    precision: number;
 }
 
 export interface BatteryTemperatureSensor {

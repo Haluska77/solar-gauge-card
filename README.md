@@ -60,20 +60,34 @@ We recommend looking at the [Example usage section](#example-usage) to understan
 #### Card options
 | Name | Type | Default | Since | Description |
 |------|:----:|:-------:|:-----:|-------------|
-| type ***(required)*** | string |  | v0.0.1 | `custom:solar-gauge-card`.
-| solarPower ***(required)*** | Object |  | v0.0.1 | Solar Power entity.
-| homeConsumption ***(required)*** | Object |  | v0.0.1 | Home consumption entity.
-| gridPower ***(required)*** | Object |  | v0.0.1 | Grid Power entity.
-| batteryPower | Object |  | v0.0.1 | Battery Power entity.
-| battery | Object |  | v0.0.1 | Battery entity.
-| gaugeWidth | Number | 20 | v0.0.1 | Set the width of the gauge. Min = 5, max = 20. Gauge width is dynamically calculated based on Total Production value.
+| type ***(required)*** | string |  | v0.0.1 | `custom:solar-gauge-card`
+| solarPower ***(required)*** | Object |  | v0.0.1 | Solar Power entity
+| homeConsumption ***(required)*** | Object |  | v0.0.1 | Home consumption entity
+| gridPower ***(required)*** | Object |  | v0.0.1 | Grid Power entity
+| batteryPower | Object |  | v0.0.1 | Battery Power entity
+| battery | `BatteryObject` |  | v0.0.1 | Battery entity
+| gaugeWidth | Number | 20 | v0.0.1 | Set the width of the gauge. Min = 5, max = 20. Gauge width is dynamically calculated based on Total Production value
 
 Total Production Value = Solar Power + Battery Power + Grid Out Power
 
 #### Grid/Battery Power options
 Grid/Battery Power could be setup in one sensor (sensor.grid/battery_power) having positive and negative value, representing consumption from grid/battery or feeding to grid/battery. Eventually, grid/battery power could be setup with 2 sensors: sensor.grid/battery_power_out (consumption from grid/battery) and sensor.grid/battery_power_in (feeding grid/battery). If all sensors are setup, then out and in sensors are ignored.
 
-Minimum setup:
+#### `BatteryObject` options
+| Name | Type | Default | Since | Description |
+|------|:----:|:-------:|:-----:|-------------|
+| capacity | BatteryCapacityObject |  | v0.0.1 | Battery capacity
+| temperature | Object |  | v0.0.1 | Battery temperature
+
+#### `BatteryCapacityObject` options
+| Name | Type | Default | Since | Description |
+|------|:----:|:-------:|:-----:|-------------|
+| entity ***(required)*** | string |  | v0.0.1 | Battery entity
+| precision | Number | 0 | v0.0.2 | Number of decimal places on entity value
+
+## Setup examples:
+
+### Minimum setup:
 ```yaml
 type: custom:solar-gauge-card
 solarPower: 
@@ -84,7 +98,7 @@ gridPower:
   entity: sensor.grid_power
 ```
 
-Full setup:
+### Full setup:
 ```yaml
 type: custom:solar-gauge-card
 solarPower: 
@@ -106,7 +120,23 @@ batteryPower:
 battery: 
   capacity:
     entity: sensor.battery_capacity
+    precision: 2
   temperature: 
     entity: sensor.battery_temperature
 gaugeWidth: 15
+```
+
+#### Card is fully customizable by `card_mod`, eg:
+```yaml
+card_mod:
+  style: |
+    ha-card {
+      margin-bottom: -28px;
+    }
+    #gauge-circle-solar {
+      stroke: orange;
+    }
+    #battery-cell-full {
+      stroke: red;
+    }
 ```

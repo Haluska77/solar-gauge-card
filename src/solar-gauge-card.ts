@@ -103,9 +103,20 @@ export class SolarGaugeCard extends LitElement {
     return Math.max(Math.min(rawNumber, this.maxStrokeWidth), this.minStrokeWidth);
   };
 
+  isPositiveInteger(value: number): boolean {
+    return !isNaN(value) && Number.isInteger(value) && value > 0;
+  }
+
   drawBattery(entity: BatterySensor) {
     if (entity.capacity.entity) {
-      const batteryCapacityValue = Number(entity.capacity.entity.state);
+      let capacityPrecision = Number(entity.capacity.precision);
+      if (!this.isPositiveInteger(capacityPrecision)){
+        capacityPrecision = 0;
+        console.log('Battery capacity precision value ' + entity.capacity.precision + ' is invalid');
+      }
+      const powerPrecision = Math.pow(10, capacityPrecision);
+      let batteryCapacityValue = Math.round(Number(entity.capacity.entity.state) * powerPrecision) / powerPrecision;
+      if (isNaN(batteryCapacityValue)) batteryCapacityValue = 0;
 
       const xStart = 130;
       const dash = 6;
@@ -133,7 +144,7 @@ export class SolarGaugeCard extends LitElement {
            </line>
            <rect id="battery-box" x="${xStart - 3}" y="${yStart - 9}" rx="3" ry="3" width="${length + 6}" height="${strokewidth + 6}" 
                      style="fill:none;stroke-width:2;stroke:${cellFullColor}"></rect>
-           <rect x="${xStart + length + 2}" y="${yStart - 5}" rx="3" ry="3" width="5" height="10" style="fill:${cellFullColor}"></rect>
+           <rect id="battery-top" x="${xStart + length + 2}" y="${yStart - 5}" rx="3" ry="3" width="5" height="10" style="fill:${cellFullColor}"></rect>
         `;
     }
   }
