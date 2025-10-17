@@ -183,7 +183,7 @@ export class EntityBuilder {
             capacity: {
                 entity: hass.states[config.battery?.capacity?.entity],
                 color: this.batteryColor,
-                precision: config.battery?.capacity?.precision ?? 0
+                precision: config.battery?.capacity?.precision
             },
             temperature: {
                 entity: hass.states[config.battery?.temperature?.entity]

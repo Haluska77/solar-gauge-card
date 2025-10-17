@@ -104,19 +104,23 @@ export class SolarGaugeCard extends LitElement {
   };
 
   isPositiveInteger(value: number): boolean {
-    return !isNaN(value) && Number.isInteger(value) && value > 0;
+    return !isNaN(value) && Number.isInteger(value) && value >= 0;
   }
 
   drawBattery(entity: BatterySensor) {
     if (entity.capacity.entity) {
-      let capacityPrecision = Number(entity.capacity.precision);
-      if (!this.isPositiveInteger(capacityPrecision)){
-        capacityPrecision = 0;
-        console.log('Battery capacity precision value ' + entity.capacity.precision + ' is invalid');
-      }
-      const powerPrecision = Math.pow(10, capacityPrecision);
-      let batteryCapacityValue = Math.round(Number(entity.capacity.entity.state) * powerPrecision) / powerPrecision;
+      let batteryCapacityValue = Number(entity.capacity.entity.state);
       if (isNaN(batteryCapacityValue)) batteryCapacityValue = 0;
+
+      if (entity.capacity.precision !== undefined) {
+        let capacityPrecision = Number(entity.capacity.precision);
+        if (this.isPositiveInteger(capacityPrecision)) {
+          const powerPrecision = Math.pow(10, capacityPrecision);
+          batteryCapacityValue = Math.round(batteryCapacityValue * powerPrecision) / powerPrecision;
+        } else {
+          console.log('Battery capacity precision value ' + entity.capacity.precision + ' is invalid');
+        }
+      }
 
       const xStart = 130;
       const dash = 6;
